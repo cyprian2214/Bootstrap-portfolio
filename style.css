@@ -58,3 +58,27 @@
     color: #000;
   }
   
+  #certificates a {
+    color: #000;
+  }
+
+  #certificates a:hover {
+    color: #000;
+    text-decoration: none;
+  }
+
+  #certificates h5:hover {
+    background-color: rgb(214, 214, 255);
+    border-radius: 0 50px 0 0;
+    text-decoration: none;
+  }
+
+  #certificates .card:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
+
+  #projects .card:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
