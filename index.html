@@ -100,7 +100,7 @@
     <section id="projects">
       <div class="container p-5">
         <h1 class="text-center"><mark>Projects</mark></h1>
-        <div class="row">
+        <div class="row" id="projectsContainer">
           <div class="col-md-4 mt-3">
             <div class="card">
               <img
@@ -186,7 +186,7 @@
     <section id="certificates">
       <div class="container p-5">
         <h1 class="text-center"><mark>Certificates</mark></h1>
-        <div class="row">
+        <div class="row" id="certificatesContainer">
 
           <div class="col-md-4 mt-3">
             <div class="card">
@@ -368,6 +368,65 @@
           const header = document.querySelector("header")
           header.classList.toggle("scrolling", window.scrollY > 0)
         })
+
+        async function loadProjects() {
+          try {
+            const response = await fetch('/api/projects');
+            const projects = await response.json();
+            
+            if (projects && projects.length > 0) {
+              const container = document.getElementById('projectsContainer');
+              const dynamicProjects = projects.map(project => `
+                <div class="col-md-4 mt-3">
+                  <div class="card">
+                    <img src="${project.image}" class="card-img-top" alt="${project.title}" />
+                    <div class="card-body">
+                      <h5 class="card-title"><a href="${project.website}">${project.title}</a></h5>
+                      <p class="card-text">${project.description}</p>
+                      <a href="${project.website}" target="_blank" class="btn btn-primary">View Website</a>
+                      <a href="${project.github}" target="_blank" class="btn btn-outline-dark"><i class="bi bi-code-slash"></i></a>
+                    </div>
+                  </div>
+                </div>
+              `).join('');
+              container.innerHTML += dynamicProjects;
+            }
+          } catch (error) {
+            console.error('Error loading projects:', error);
+          }
+        }
+
+        async function loadCertificates() {
+          try {
+            const response = await fetch('/api/certificates');
+            const certificates = await response.json();
+            
+            if (certificates && certificates.length > 0) {
+              const container = document.getElementById('certificatesContainer');
+              const dynamicCertificates = certificates.map(cert => `
+                <div class="col-md-4 mt-3">
+                  <div class="card">
+                    <img src="${cert.image}" class="card-img-top" alt="${cert.title}" />
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        ${cert.url ? `<a href="${cert.url}">${cert.title}</a>` : cert.title}
+                      </h5>
+                      <p class="card-text">Issued by <a href="${cert.issuerUrl}">${cert.issuer}</a> on ${cert.date}</p>
+                    </div>
+                  </div>
+                </div>
+              `).join('');
+              container.innerHTML += dynamicCertificates;
+            }
+          } catch (error) {
+            console.error('Error loading certificates:', error);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          loadProjects();
+          loadCertificates();
+        });
 
     </script>
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
