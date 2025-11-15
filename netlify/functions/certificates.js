@@ -52,6 +52,42 @@ export default async (request, context) => {
     }
   }
 
+  if (request.method === 'PUT') {
+    try {
+      const updatedCertificate = await request.json();
+      
+      if (!updatedCertificate.id) {
+        return new Response(JSON.stringify({ error: 'ID required' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      const certificates = (await store.get('all', { type: 'json' })) || [];
+      const index = certificates.findIndex(c => c.id === updatedCertificate.id);
+      
+      if (index === -1) {
+        return new Response(JSON.stringify({ error: 'Certificate not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      certificates[index] = updatedCertificate;
+      await store.setJSON('all', certificates);
+      
+      return new Response(JSON.stringify(updatedCertificate), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
   if (request.method === 'DELETE') {
     try {
       const url = new URL(request.url);

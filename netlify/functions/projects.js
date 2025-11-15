@@ -52,6 +52,42 @@ export default async (request, context) => {
     }
   }
 
+  if (request.method === 'PUT') {
+    try {
+      const updatedProject = await request.json();
+      
+      if (!updatedProject.id) {
+        return new Response(JSON.stringify({ error: 'ID required' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      const projects = (await store.get('all', { type: 'json' })) || [];
+      const index = projects.findIndex(p => p.id === updatedProject.id);
+      
+      if (index === -1) {
+        return new Response(JSON.stringify({ error: 'Project not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      projects[index] = updatedProject;
+      await store.setJSON('all', projects);
+      
+      return new Response(JSON.stringify(updatedProject), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
   if (request.method === 'DELETE') {
     try {
       const url = new URL(request.url);
