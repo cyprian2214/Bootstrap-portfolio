@@ -16,8 +16,8 @@ export default async (request, context) => {
 
       const imageStore = getStore('images');
       const blob = await imageStore.get(fileName, { type: 'arrayBuffer' });
-      const metadata = await imageStore.getMetadata(fileName);
-      
+      const { metadata } = await imageStore.getMetadata(fileName);
+
       if (!blob) {
         return new Response(JSON.stringify({ error: 'Image not found' }), {
           status: 404,

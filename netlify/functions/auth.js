@@ -3,7 +3,7 @@ export function verifyAdmin(request) {
   const adminPassword = process.env.ADMIN_PASSWORD;
   
   if (!adminPassword) {
-    throw new Error('ADMIN_PASSWORD not configured');
+    return false;
   }
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
