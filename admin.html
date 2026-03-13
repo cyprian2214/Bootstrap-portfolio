@@ -164,9 +164,15 @@
 
     async function testAuth() {
       try {
-        const response = await fetch('/api/projects', {
+        const response = await fetch('/api/verify-auth', {
           headers: { 'Authorization': `Bearer ${adminToken}` }
         });
+        if (response.status === 500) {
+          const data = await response.json();
+          document.getElementById('loginError').textContent = data.error || 'Server configuration error';
+          document.getElementById('loginError').style.display = 'block';
+          return false;
+        }
         return response.ok;
       } catch {
         return false;

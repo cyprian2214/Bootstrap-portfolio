@@ -23,8 +23,15 @@ export default async (request, context) => {
     }
   }
 
-  if (!verifyAdmin(request)) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+  try {
+    if (!verifyAdmin(request)) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Authentication error' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' }
     });
